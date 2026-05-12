@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/Samples/">
+    <Project Path="DandyStrategies.Samples.API/DandyStrategies.Samples.API.csproj" />
+  </Folder>
+  <Project Path="DandyStrategies/DandyStrategies.csproj" />
+</Solution>
