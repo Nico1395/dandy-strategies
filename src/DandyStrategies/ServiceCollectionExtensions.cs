@@ -9,13 +9,11 @@ public static class ServiceCollectionExtensions
     [
         typeof(IStrategy<>),
         typeof(IStrategy<,>),
-        typeof(IAsyncStrategy<>),
-        typeof(IAsyncStrategy<,>),
     ];
 
     public static IServiceCollection AddDandyStrategies(this IServiceCollection services, Action<StrategiesConfigurationBuilder>? configuration = null)
     {
-        var builder = new StrategiesConfigurationBuilder();
+        var builder = new StrategiesConfigurationBuilder(services);
         configuration?.Invoke(builder);
         var cfg = builder.Build();
 
@@ -24,7 +22,7 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
-    
+
     private static void AddServicesFromAssemblies(IServiceCollection services, IReadOnlyList<Assembly> assemblies)
     {
         var handlerTypes = assemblies.SelectMany(a => a.DefinedTypes).Where(t => t.IsClass && !t.IsAbstract && !t.IsGenericTypeDefinition);
@@ -43,4 +41,17 @@ public static class ServiceCollectionExtensions
         }
     }
 
+    public static IServiceCollection AddStategyDefinition<TDefinition>(this IServiceCollection services, Action<IStrategyRegistrar<TDefinition>> definition)
+        where TDefinition : IStrategyDefinition
+    {
+        definition(new StrategyRegistrar<TDefinition>(services));
+        return services;
+    }
+
+    public static IServiceCollection AddStategyDefinition<TDefinition, TReturn>(this IServiceCollection services, Action<IStrategyRegistrar<TDefinition, TReturn>> definition)
+        where TDefinition : IStrategyDefinition<TReturn>
+    {
+        definition(new StrategyRegistrar<TDefinition, TReturn>(services));
+        return services;
+    }
 }
