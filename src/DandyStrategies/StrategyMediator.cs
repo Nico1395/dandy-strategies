@@ -28,20 +28,24 @@ internal sealed class StrategyMediator(IServiceProvider _serviceProvider) : IStr
     public Task ExecuteAsync<TDefinition>(TDefinition definition, CancellationToken cancellationToken = default)
         where TDefinition : IStrategyDefinition<Task>
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         var strategyType = typeof(IStrategy<,>).MakeGenericType(definition.GetType(), typeof(Task));
         var strategy = _serviceProvider.GetRequiredKeyedService(strategyType, definition.Key);
         
         var executeMethod = strategyType.GetMethod(nameof(IStrategy<,>.Execute)) ?? throw new InvalidOperationException($"Strategy '{strategyType}' does not contain method with name '{nameof(IStrategy<,>.Execute)}'. This in an internal error, please report this error on GitHub");
-        return executeMethod.Invoke(strategy, [definition, cancellationToken]) as Task ?? throw new InvalidCastException($"Invoking strategy of type '{strategyType}' should have returned a Task.");
+        return executeMethod.Invoke(strategy, [definition]) as Task ?? throw new InvalidCastException($"Invoking strategy of type '{strategyType}' should have returned a Task.");
     }
 
     public async Task<TReturn> ExecuteAsync<TReturn>(IStrategyDefinition<Task<TReturn>> definition, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         var strategyType = typeof(IStrategy<,>).MakeGenericType(definition.GetType(), typeof(Task<TReturn>));
         var strategy = _serviceProvider.GetRequiredKeyedService(strategyType, definition.Key);
         
         var executeMethod = strategyType.GetMethod(nameof(IStrategy<,>.Execute)) ?? throw new InvalidOperationException($"Strategy '{strategyType}' does not contain method with name '{nameof(IStrategy<,>.Execute)}'. This in an internal error, please report this error on GitHub");
-        var task = executeMethod.Invoke(strategy, [definition, cancellationToken]) as Task<TReturn> ?? throw new InvalidCastException($"Invoking strategy of type '{strategyType}' should have returned a {typeof(Task<TReturn>)}.");
+        var task = executeMethod.Invoke(strategy, [definition]) as Task<TReturn> ?? throw new InvalidCastException($"Invoking strategy of type '{strategyType}' should have returned a {typeof(Task<TReturn>)}.");
 
         var result = await task;
         if (result is not TReturn castedResult)

@@ -24,7 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Mocks/" />
+    <Folder Include="Fixtures\" />
+    <Folder Include="Mocks\" />
   </ItemGroup>
 
 </Project>
