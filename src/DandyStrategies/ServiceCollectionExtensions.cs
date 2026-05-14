@@ -41,14 +41,14 @@ public static class ServiceCollectionExtensions
         }
     }
 
-    public static IServiceCollection AddStategyDefinition<TDefinition>(this IServiceCollection services, Action<IStrategyRegistrar<TDefinition>> definition)
+    public static IServiceCollection AddStrategyDefinition<TDefinition>(this IServiceCollection services, Action<IStrategyRegistrar<TDefinition>> definition)
         where TDefinition : IStrategyDefinition
     {
         definition(new StrategyRegistrar<TDefinition>(services));
         return services;
     }
 
-    public static IServiceCollection AddStategyDefinition<TDefinition, TReturn>(this IServiceCollection services, Action<IStrategyRegistrar<TDefinition, TReturn>> definition)
+    public static IServiceCollection AddStrategyDefinition<TDefinition, TReturn>(this IServiceCollection services, Action<IStrategyRegistrar<TDefinition, TReturn>> definition)
         where TDefinition : IStrategyDefinition<TReturn>
     {
         definition(new StrategyRegistrar<TDefinition, TReturn>(services));
