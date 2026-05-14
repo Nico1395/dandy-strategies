@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DandyStrategies;
 
-internal sealed class StrategyRegistrar<TDefinition>(IServiceCollection _services) : IStrategyRegistrar<TDefinition>
+public sealed class StrategyRegistrar<TDefinition>(IServiceCollection _services) : IStrategyRegistrar<TDefinition>
     where TDefinition : IStrategyDefinition
 {
     public IStrategyRegistrar<TDefinition> AddStrategy(object key, Type strategyType)
@@ -24,7 +24,7 @@ internal sealed class StrategyRegistrar<TDefinition>(IServiceCollection _service
     }
 }
 
-internal sealed class StrategyRegistrar<TDefinition, TReturn>(IServiceCollection _services) : IStrategyRegistrar<TDefinition, TReturn>
+public sealed class StrategyRegistrar<TDefinition, TReturn>(IServiceCollection _services) : IStrategyRegistrar<TDefinition, TReturn>
     where TDefinition : IStrategyDefinition<TReturn>
 {
     public IStrategyRegistrar<TDefinition, TReturn> AddStrategy(object key, Type strategyType)

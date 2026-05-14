@@ -2,5 +2,6 @@
   <Folder Name="/Samples/">
     <Project Path="DandyStrategies.Samples.API/DandyStrategies.Samples.API.csproj" />
   </Folder>
+  <Project Path="DandyStrategies.Tests/DandyStrategies.Tests.csproj" />
   <Project Path="DandyStrategies/DandyStrategies.csproj" />
 </Solution>
