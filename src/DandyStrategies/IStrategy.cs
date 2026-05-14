@@ -1,13 +1,13 @@
 namespace DandyStrategies;
 
-public interface IStrategy<TKey>
-    where TKey : IStrategyKey
+public interface IStrategy<TDefinition>
+    where TDefinition : IStrategyDefinition
 {
-    void Execute(TKey strategy);
+    void Execute(TDefinition definition);
 }
 
-public interface IStrategy<TKey, TReturnValue>
-    where TKey : IStrategyKey<TReturnValue>
+public interface IStrategy<TDefinition, TReturn>
+    where TDefinition : IStrategyDefinition<TReturn>
 {
-    TReturnValue Execute(TKey strategy);
+    TReturn Execute(TDefinition definition);
 }

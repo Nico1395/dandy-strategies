@@ -2,8 +2,8 @@ namespace DandyStrategies;
 
 public interface IStrategyMediator
 {
-    void Execute(IStrategyKey key);
-    TReturnValue Execute<TReturnValue>(IStrategyKey<TReturnValue> key);
-    Task ExecuteAsync(IAsyncStrategyKey key, CancellationToken cancellationToken);
-    Task<TReturnValue> ExecuteAsync<TReturnValue>(IAsyncStrategyKey<TReturnValue> key, CancellationToken cancellationToken);
+    void Execute<TDefinition>(TDefinition definition) where TDefinition : IStrategyDefinition;
+    TReturn Execute<TReturn>(IStrategyDefinition<TReturn> definition);
+    Task ExecuteAsync<TDefinition>(TDefinition definition, CancellationToken cancellationToken = default) where TDefinition : IStrategyDefinition<Task>;
+    Task<TReturn> ExecuteAsync<TReturn>(IStrategyDefinition<Task<TReturn>> definition, CancellationToken cancellationToken = default);
 }
