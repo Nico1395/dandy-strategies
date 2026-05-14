@@ -18,17 +18,21 @@ public static class ServiceCollectionExtensions
         var cfg = builder.Build();
 
         services.AddTransient<IStrategyMediator, StrategyMediator>();
-        AddServicesFromAssemblies(services, cfg.Assemblies);
+        AddStrategiesByKeyAttributeFromAssemblies(services, cfg.Assemblies);
 
         return services;
     }
 
-    private static void AddServicesFromAssemblies(IServiceCollection services, IReadOnlyList<Assembly> assemblies)
+    private static void AddStrategiesByKeyAttributeFromAssemblies(IServiceCollection services, IReadOnlyList<Assembly> assemblies)
     {
-        var handlerTypes = assemblies.SelectMany(a => a.DefinedTypes).Where(t => t.IsClass && !t.IsAbstract && !t.IsGenericTypeDefinition);
+        var handlerTypes = assemblies.SelectMany(a => a.DefinedTypes).Where(t => t.IsClass && !t.IsAbstract && !t.IsGenericTypeDefinition && t.GetCustomAttribute<StrategyKeyAttribute>() != null);
         foreach (var implementationType in handlerTypes)
         {
             var interfaces = implementationType.ImplementedInterfaces;
+            var keyAttribute = implementationType.GetCustomAttribute<StrategyKeyAttribute>();
+            if (keyAttribute == null)
+                continue;
+            
             foreach (var @interface in interfaces)
             {
                 if (!@interface.IsGenericType)
@@ -36,7 +40,7 @@ public static class ServiceCollectionExtensions
 
                 var genericDefinition = @interface.GetGenericTypeDefinition();
                 if (_serviceTypes.Contains(genericDefinition))
-                    services.AddTransient(@interface, implementationType);
+                    services.AddKeyedTransient(@interface, keyAttribute.Key, implementationType);
             }
         }
     }
