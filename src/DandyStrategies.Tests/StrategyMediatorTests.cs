@@ -1,5 +1,5 @@
-using DandyStrategies.Tests.Fixtures;
 using DandyStrategies.Tests.Mocks;
+using DandyStrategies.Tests.Setups;
 
 namespace DandyStrategies.Tests;
 
