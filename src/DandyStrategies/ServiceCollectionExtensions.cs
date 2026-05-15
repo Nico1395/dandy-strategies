@@ -9,6 +9,8 @@ public static class ServiceCollectionExtensions
     [
         typeof(IStrategy<>),
         typeof(IStrategy<,>),
+        typeof(IAsyncStrategy<>),
+        typeof(IAsyncStrategy<,>),
     ];
 
     public static IServiceCollection AddDandyStrategies(this IServiceCollection services, Action<StrategiesConfigurationBuilder>? configuration = null)
@@ -56,6 +58,20 @@ public static class ServiceCollectionExtensions
         where TDefinition : IStrategyDefinition<TReturn>
     {
         definition(new StrategyRegistrar<TDefinition, TReturn>(services));
+        return services;
+    }
+
+    public static IServiceCollection AddStrategyDefinition<TDefinition>(this IServiceCollection services, Action<IAsyncStrategyRegistrar<TDefinition>> definition)
+        where TDefinition : IAsyncStrategyDefinition
+    {
+        definition(new AsyncStrategyRegistrar<TDefinition>(services));
+        return services;
+    }
+
+    public static IServiceCollection AddStrategyDefinition<TDefinition, TReturn>(this IServiceCollection services, Action<IAsyncStrategyRegistrar<TDefinition, TReturn>> definition)
+        where TDefinition : IAsyncStrategyDefinition<TReturn>
+    {
+        definition(new AsyncStrategyRegistrar<TDefinition, TReturn>(services));
         return services;
     }
 }

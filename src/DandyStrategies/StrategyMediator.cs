@@ -13,44 +13,33 @@ internal sealed class StrategyMediator(IServiceProvider _serviceProvider) : IStr
 
     public TReturn Execute<TReturn>(IStrategyDefinition<TReturn> definition)
     {
-        var strategyType = typeof(IStrategy<,>).MakeGenericType(definition.GetType(), typeof(TReturn));
-        var strategy = _serviceProvider.GetRequiredKeyedService(strategyType, definition.Key);
+        var interfaceType = typeof(IStrategy<,>).MakeGenericType(definition.GetType(), typeof(TReturn));
+        var strategy = _serviceProvider.GetRequiredKeyedService(interfaceType, definition.Key);
         
-        var executeMethod = strategyType.GetMethod(nameof(IStrategy<,>.Execute)) ?? throw new InvalidOperationException($"Strategy '{strategyType}' does not contain method with name '{nameof(IStrategy<,>.Execute)}'. This in an internal error, please report this error on GitHub");
+        var executeMethod = interfaceType.GetMethod(nameof(IStrategy<,>.Execute)) ?? throw new InvalidOperationException($"Strategy '{interfaceType}' does not contain method with name '{nameof(IStrategy<,>.Execute)}'. This in an internal error, please report this error on GitHub.");
         var result = executeMethod.Invoke(strategy, [definition]);
 
         if (result is not TReturn castedResult)
-            throw new InvalidCastException($"Result of strategy '{strategyType}' is of type '{result?.GetType()}' but a result of type '{typeof(TReturn)}' was expected.");
+            throw new InvalidCastException($"Result of strategy '{interfaceType}' is of type '{result?.GetType()}' but a result of type '{typeof(TReturn)}' was expected.");
 
         return castedResult;
     }
 
     public Task ExecuteAsync<TDefinition>(TDefinition definition, CancellationToken cancellationToken = default)
-        where TDefinition : IStrategyDefinition<Task>
+        where TDefinition : IAsyncStrategyDefinition
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var strategyType = typeof(IStrategy<,>).MakeGenericType(definition.GetType(), typeof(Task));
-        var strategy = _serviceProvider.GetRequiredKeyedService(strategyType, definition.Key);
-        
-        var executeMethod = strategyType.GetMethod(nameof(IStrategy<,>.Execute)) ?? throw new InvalidOperationException($"Strategy '{strategyType}' does not contain method with name '{nameof(IStrategy<,>.Execute)}'. This in an internal error, please report this error on GitHub");
-        return executeMethod.Invoke(strategy, [definition]) as Task ?? throw new InvalidCastException($"Invoking strategy of type '{strategyType}' should have returned a Task.");
+        var strategy = _serviceProvider.GetRequiredKeyedService<IAsyncStrategy<TDefinition>>(definition.Key);
+        return strategy.ExecuteAsync(definition, cancellationToken);
     }
 
-    public async Task<TReturn> ExecuteAsync<TReturn>(IStrategyDefinition<Task<TReturn>> definition, CancellationToken cancellationToken = default)
+    public Task<TReturn> ExecuteAsync<TReturn>(IAsyncStrategyDefinition<TReturn> definition, CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var strategyType = typeof(IStrategy<,>).MakeGenericType(definition.GetType(), typeof(Task<TReturn>));
-        var strategy = _serviceProvider.GetRequiredKeyedService(strategyType, definition.Key);
+        var interfaceType = typeof(IAsyncStrategy<,>).MakeGenericType(definition.GetType(), typeof(TReturn));
+        var strategy = _serviceProvider.GetRequiredKeyedService(interfaceType, definition.Key);
         
-        var executeMethod = strategyType.GetMethod(nameof(IStrategy<,>.Execute)) ?? throw new InvalidOperationException($"Strategy '{strategyType}' does not contain method with name '{nameof(IStrategy<,>.Execute)}'. This in an internal error, please report this error on GitHub");
-        var task = executeMethod.Invoke(strategy, [definition]) as Task<TReturn> ?? throw new InvalidCastException($"Invoking strategy of type '{strategyType}' should have returned a {typeof(Task<TReturn>)}.");
+        var executeMethod = interfaceType.GetMethod(nameof(IAsyncStrategy<,>.ExecuteAsync)) ?? throw new InvalidOperationException($"Strategy '{interfaceType}' does not contain method with name '{nameof(IAsyncStrategy<,>.ExecuteAsync)}'. This in an internal error, please report this error on GitHub.");
+        var task = executeMethod.Invoke(strategy, [definition, cancellationToken]) as Task<TReturn> ?? throw new InvalidCastException($"Invoking strategy of type '{interfaceType}' should have returned a {typeof(Task<TReturn>)}.");
 
-        var result = await task;
-        if (result is not TReturn castedResult)
-            throw new InvalidCastException($"Result of strategy '{strategyType}' is of type '{result?.GetType()}' but a result of type '{typeof(TReturn)}' was expected.");
-
-        return castedResult;
+        return task;
     }
 }

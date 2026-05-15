@@ -8,9 +8,9 @@ internal static class AsyncStrategies
     }
 
     [StrategyKey("strat-a")]
-    public sealed class StrategyA : IStrategy<Definition, Task>
+    public sealed class StrategyA : IAsyncStrategy<Definition>
     {
-        public Task Execute(Definition definition)
+        public Task ExecuteAsync(Definition definition, CancellationToken cancellationToken)
         {
             definition.Helper.ExecutedStrategy = definition.Key;
             return Task.CompletedTask;
@@ -18,9 +18,9 @@ internal static class AsyncStrategies
     }
 
     [StrategyKey("strat-b")]
-    public sealed class StrategyB : IStrategy<Definition, Task>
+    public sealed class StrategyB : IAsyncStrategy<Definition>
     {
-        public Task Execute(Definition definition)
+        public Task ExecuteAsync(Definition definition, CancellationToken cancellationToken)
         {
             definition.Helper.ExecutedStrategy = definition.Key;
             return Task.CompletedTask;

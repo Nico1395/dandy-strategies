@@ -12,7 +12,6 @@ public sealed class StrategyRegistrar<TDefinition>(IServiceCollection _services)
             throw new InvalidOperationException($"Type '{strategyType}' does not implement '{interfaceType}'.");
 
         _services.AddKeyedTransient(interfaceType, key, strategyType);
-
         return this;
     }
 
@@ -34,7 +33,6 @@ public sealed class StrategyRegistrar<TDefinition, TReturn>(IServiceCollection _
             throw new InvalidOperationException($"Type '{strategyType}' does not implement '{interfaceType}'.");
 
         _services.AddKeyedTransient(interfaceType, key, strategyType);
-
         return this;
     }
 

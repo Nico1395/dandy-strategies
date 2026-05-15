@@ -27,5 +27,19 @@ public sealed class StrategiesConfigurationBuilder(IServiceCollection _services)
         return this;
     }
 
+    public StrategiesConfigurationBuilder AddStategyDefinition<TDefinition>(Action<IAsyncStrategyRegistrar<TDefinition>> definition)
+        where TDefinition : IAsyncStrategyDefinition
+    {
+        definition(new AsyncStrategyRegistrar<TDefinition>(_services));
+        return this;
+    }
+
+    public StrategiesConfigurationBuilder AddStategyDefinition<TDefinition, TReturn>(Action<IAsyncStrategyRegistrar<TDefinition, TReturn>> definition)
+        where TDefinition : IAsyncStrategyDefinition<TReturn>
+    {
+        definition(new AsyncStrategyRegistrar<TDefinition, TReturn>(_services));
+        return this;
+    }
+
     internal StrategiesConfiguration Build() => _configuration;
 }
