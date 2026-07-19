@@ -7,7 +7,7 @@ public class GenericDependencyInjectionTests
     private const string _stratAKey = "strat-a";
     private const string _stratBKey = "strat-b";
 
-    private sealed class GenericStrategyDefinition(object key) : StrategyDefinition<bool>(key);
+    private sealed record GenericStrategyDefinition(object Key) : IStrategyDefinition<bool>;
 
     private sealed class GenericStrategyA : IStrategy<GenericStrategyDefinition, bool>
     {
@@ -20,7 +20,7 @@ public class GenericDependencyInjectionTests
     }
 
     [Fact]
-    public void ServiceCollectionExtensions_AddStategyDefinition_Generic_AddsStrategies()
+    public void ServiceCollectionExtensions_AddStrategyDefinition_Generic_AddsStrategies()
     {
         var serviceProvider = new ServiceCollection().AddStrategyDefinition<GenericStrategyDefinition, bool>(def =>
         {

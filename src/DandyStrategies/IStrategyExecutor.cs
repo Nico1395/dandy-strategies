@@ -1,6 +1,6 @@
 namespace DandyStrategies;
 
-public interface IStrategyMediator
+public interface IStrategyExecutor
 {
     void Execute<TDefinition>(TDefinition definition) where TDefinition : IStrategyDefinition;
     TReturn Execute<TReturn>(IStrategyDefinition<TReturn> definition);

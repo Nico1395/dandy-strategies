@@ -21,8 +21,8 @@ public class StrategyMediatorSetup
         return ServiceProvider.GetRequiredService<TService>();
     }
 
-    public IStrategyMediator GetStrategyMediator()
+    public IStrategyExecutor GetStrategyExecutor()
     {
-        return GetRequiredService<IStrategyMediator>();
+        return GetRequiredService<IStrategyExecutor>();
     }
 }

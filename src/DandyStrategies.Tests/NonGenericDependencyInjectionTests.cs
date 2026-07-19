@@ -7,7 +7,7 @@ public class NonGenericDependencyInjectionTests
     private const string _stratAKey = "strat-a";
     private const string _stratBKey = "strat-b";
 
-    private sealed class NonGenericStrategyDefinition(object key) : StrategyDefinition(key);
+    private sealed record NonGenericStrategyDefinition(object Key) : IStrategyDefinition;
 
     private sealed class NonGenericStrategyA : IStrategy<NonGenericStrategyDefinition>
     {
@@ -20,7 +20,7 @@ public class NonGenericDependencyInjectionTests
     }
 
     [Fact]
-    public void ServiceCollectionExtensions_AddStategyDefinition_NonGeneric_AddsStrategies()
+    public void ServiceCollectionExtensions_AddStrategyDefinition_NonGeneric_AddsStrategies()
     {
         var serviceProvider = new ServiceCollection().AddStrategyDefinition<NonGenericStrategyDefinition>(def =>
         {

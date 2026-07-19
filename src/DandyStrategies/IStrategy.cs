@@ -1,12 +1,12 @@
 namespace DandyStrategies;
 
-public interface IStrategy<TDefinition>
+public interface IStrategy<in TDefinition>
     where TDefinition : IStrategyDefinition
 {
     void Execute(TDefinition definition);
 }
 
-public interface IStrategy<TDefinition, TReturn>
+public interface IStrategy<in TDefinition, out TReturn>
     where TDefinition : IStrategyDefinition<TReturn>
 {
     TReturn Execute(TDefinition definition);

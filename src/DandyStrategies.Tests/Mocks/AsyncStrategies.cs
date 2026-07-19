@@ -2,10 +2,7 @@ namespace DandyStrategies.Tests.Mocks;
 
 internal static class AsyncStrategies
 {
-    public sealed class Definition(object key, StrategyAssertHelper helper) : AsyncStrategyDefinition(key)
-    {
-        public StrategyAssertHelper Helper { get; } = helper;
-    }
+    public sealed record Definition(object Key, StrategyAssertHelper Helper) : IAsyncStrategyDefinition;
 
     [StrategyKey("strat-a")]
     public sealed class StrategyA : IAsyncStrategy<Definition>

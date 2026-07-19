@@ -13,28 +13,28 @@ public sealed class StrategiesConfigurationBuilder(IServiceCollection _services)
         return this;
     }
 
-    public StrategiesConfigurationBuilder AddStategyDefinition<TDefinition>(Action<IStrategyRegistrar<TDefinition>> definition)
+    public StrategiesConfigurationBuilder AddStrategyDefinition<TDefinition>(Action<IStrategyRegistrar<TDefinition>> definition)
         where TDefinition : IStrategyDefinition
     {
         definition(new StrategyRegistrar<TDefinition>(_services));
         return this;
     }
 
-    public StrategiesConfigurationBuilder AddStategyDefinition<TDefinition, TReturn>(Action<IStrategyRegistrar<TDefinition, TReturn>> definition)
+    public StrategiesConfigurationBuilder AddStrategyDefinition<TDefinition, TReturn>(Action<IStrategyRegistrar<TDefinition, TReturn>> definition)
         where TDefinition : IStrategyDefinition<TReturn>
     {
         definition(new StrategyRegistrar<TDefinition, TReturn>(_services));
         return this;
     }
 
-    public StrategiesConfigurationBuilder AddStategyDefinition<TDefinition>(Action<IAsyncStrategyRegistrar<TDefinition>> definition)
+    public StrategiesConfigurationBuilder AddStrategyDefinition<TDefinition>(Action<IAsyncStrategyRegistrar<TDefinition>> definition)
         where TDefinition : IAsyncStrategyDefinition
     {
         definition(new AsyncStrategyRegistrar<TDefinition>(_services));
         return this;
     }
 
-    public StrategiesConfigurationBuilder AddStategyDefinition<TDefinition, TReturn>(Action<IAsyncStrategyRegistrar<TDefinition, TReturn>> definition)
+    public StrategiesConfigurationBuilder AddStrategyDefinition<TDefinition, TReturn>(Action<IAsyncStrategyRegistrar<TDefinition, TReturn>> definition)
         where TDefinition : IAsyncStrategyDefinition<TReturn>
     {
         definition(new AsyncStrategyRegistrar<TDefinition, TReturn>(_services));

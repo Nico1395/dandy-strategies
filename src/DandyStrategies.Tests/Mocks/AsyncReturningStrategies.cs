@@ -2,7 +2,7 @@ namespace DandyStrategies.Tests.Mocks;
 
 internal static class AsyncReturningStrategies
 {
-    public sealed class Definition(object key) : AsyncStrategyDefinition<object>(key);
+    public sealed record Definition(object Key) : IAsyncStrategyDefinition<object>;
 
     [StrategyKey("strat-a")]
     public sealed class StrategyA : IAsyncStrategy<Definition, object>

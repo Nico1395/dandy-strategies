@@ -7,7 +7,7 @@ public class StrategyKeyAttributeDependencyInjectionTests
     private const string _stratAKey = "strat-a";
     private const string _stratBKey = "strat-b";
 
-    private sealed class AssemblyScanningStrategyDefinition(object key) : StrategyDefinition(key);
+    private sealed record AssemblyScanningStrategyDefinition(object Key) : IStrategyDefinition;
 
     [StrategyKey(_stratAKey)]
     private sealed class AssemblyScanningStrategyA : IStrategy<AssemblyScanningStrategyDefinition>
@@ -20,7 +20,6 @@ public class StrategyKeyAttributeDependencyInjectionTests
     {
         public void Execute(AssemblyScanningStrategyDefinition definition) => throw new NotImplementedException();
     }
-
 
     [Fact]
     public void ServiceCollectionExtensions_AddStrategiesByKeyAttributeFromAssemblies_CorrectlyAddsStrategies()

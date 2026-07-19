@@ -2,7 +2,7 @@ namespace DandyStrategies.Tests.Mocks;
 
 internal static class SyncReturningStrategies
 {
-    public sealed class Definition(object key) : StrategyDefinition<object>(key);
+    public sealed record Definition(object Key) : IStrategyDefinition<object>;
 
     [StrategyKey("strat-a")]
     public sealed class StrategyA : IStrategy<Definition, object>
