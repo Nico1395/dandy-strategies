@@ -3,26 +3,19 @@ A small framework for streamlining the use of the strategy design pattern in C# 
 
 # Setup and use
 ## Implementing strategies
-Before implementing strategies you need to write a strategy definiton, by implementing one of these abstract classes, depending on your need:
-- `StrategyDefinition` - synchronous returning nothing
-- `StrategyDefinition<TReturn>` - synchronous returning `TReturn`
-- `AsyncStrategyDefinition` - asynchronous returning nothing
-- `AsyncStrategyDefinition<TReturn>` - asynchronous returning `TReturn`
-
-The strategy definition always contains a key of type `object` and can contain more properties if required. The key will obviously be used to determine what strategy to execute (I expect you to understand how the strategy pattern works). The definition will be passed into the strategy itself so these properties are perfect for passing along data required in the strategy implementation.
-
-There is a specific strategy interface for every type of strategy definiton:
-- `IStrategy<TDefinition>` - synchronous returning nothing
-- `IStrategy<TDefinition, TReturn>` - synchronous returning `TReturn`
-- `IAsyncStrategy<TDefinition>` - asynchronous returning nothing
-- `IAsyncStrategy<TDefinition, TReturn>` - asynchronous returning `TReturn`
+Before implementing strategies you need to write a strategy definiton, by implementing one of these interfaces, depending on your need:
+- `IStrategyDefinition` - synchronous returning nothing
+- `IStrategyDefinition<TReturn>` - synchronous returning `TReturn`
+- `IAsyncStrategyDefinition` - asynchronous returning nothing
+- `IAsyncStrategyDefinition<TReturn>` - asynchronous returning `TReturn`
 
 An implemented series of strategies for one definition could look like this:
 ```cs
 internal static class MyStrategy
 {
-    public sealed class Definition(object key) : StrategyDefinition(key);
+    public sealed record Definition(object Key) : IStrategyDefinition;
 
+    [StrategyKey("a")]
     public sealed class StrategyA : IStrategy<Definition>
     {
         public void Execute(Definition definition)
@@ -30,6 +23,7 @@ internal static class MyStrategy
         }
     }
     
+    [StrategyKey("b")]
     public sealed class StrategyB : IStrategy<Definition>
     {
         public void Execute(Definition definition)
@@ -42,15 +36,15 @@ internal static class MyStrategy
 But of course you can structure your classes differently as well.
 
 ## Executing strategies
-To execute the strategies you have to inject the `IStrategyMediator` and instantiate a strategy definition. The mediator allows you to throw in the strategy definition and figures out what strategy to run.
+To execute the strategies you have to inject the `IStrategyExecutor` and instantiate a strategy definition. The executor allows you to throw in the strategy definition and figures out what strategy to run.
 
 ```cs
-internal sealed class MyService(IStrategyMediator _strategyMediator)
+internal sealed class MyService(IStrategyExecutor executor)
 {
-    public void MyCoolMethodAsync(string donaldTrumpIsInTheEpsteinFiles)
+    public void MyCoolMethod(string donaldTrumpIsInTheEpsteinFiles)
     {
         var definition = new MyStrategy.Definition(donaldTrumpIsInTheEpsteinFiles);
-        _strategyMediator.Execute(definition);
+        executor.Execute(definition);
     }
 }
 ```
@@ -102,31 +96,4 @@ services.AddDandyStrategies(cfg =>
 {
     cfg.ScanInAssemblies(GetType().Assembly);
 });
-```
-```cs
-internal static class MyStrategy
-{
-    public sealed class Definition(object key, StrategyAssertHelper helper) : StrategyDefinition(key)
-    {
-        public StrategyAssertHelper Helper { get; } = helper;
-    }
-
-    [StrategyKey("strat-a")]
-    public sealed class StrategyA : IStrategy<Definition>
-    {
-        public void Execute(Definition definition)
-        {
-            definition.Helper.ExecutedStrategy = definition.Key;
-        }
-    }
-    
-    [StrategyKey("strat-b")]
-    public sealed class StrategyB : IStrategy<Definition>
-    {
-        public void Execute(Definition definition)
-        {
-            definition.Helper.ExecutedStrategy = definition.Key;
-        }
-    }
-}
 ```
