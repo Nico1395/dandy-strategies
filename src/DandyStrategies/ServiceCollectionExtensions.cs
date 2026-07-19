@@ -60,4 +60,18 @@ public static class ServiceCollectionExtensions
         definition(new StrategyRegistrar<TDefinition, TReturn>(services));
         return services;
     }
+
+    public static IServiceCollection AddStrategyDefinition<TDefinition>(this IServiceCollection services, Action<IAsyncStrategyRegistrar<TDefinition>> definition)
+        where TDefinition : IAsyncStrategyDefinition
+    {
+        definition(new AsyncStrategyRegistrar<TDefinition>(services));
+        return services;
+    }
+
+    public static IServiceCollection AddStrategyDefinition<TDefinition, TReturn>(this IServiceCollection services, Action<IAsyncStrategyRegistrar<TDefinition, TReturn>> definition)
+        where TDefinition : IAsyncStrategyDefinition<TReturn>
+    {
+        definition(new AsyncStrategyRegistrar<TDefinition, TReturn>(services));
+        return services;
+    }
 }
